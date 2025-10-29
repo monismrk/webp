@@ -1,0 +1,17 @@
+addEventListener('fetch', event => {
+  event.respondWith(handleRequest(event.request));
+});
+
+async function handleRequest(request) {
+  const url = new URL(request.url);
+  // Extract subdomain (e.g., xyz.webp.page => xyz)
+  const match = url.hostname.match(/^([^.]+)\.webp\.page$/);
+  if (match) {
+    const subdir = match[1];
+    // Reconstruct URL to fetch content from the subdirectory
+    url.hostname = 'webp.page';
+    url.pathname = `/${subdir}${url.pathname}`;
+    return fetch(url.toString(), request);
+  }
+  return fetch(request);
+}
